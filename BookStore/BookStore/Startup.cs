@@ -1,10 +1,14 @@
+using BookStore.Controllers;
+using BookStore.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +21,11 @@ namespace BookStore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            // adding run time compilation package
+            //this slows our performance so we only use in developing mode not production so use if statement
+#if DEBUG
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -26,6 +35,18 @@ namespace BookStore
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // this is for running staticfiles. without this our static files will not run or app willnot know about our static files
+            app.UseStaticFiles();
+
+            //if you want to make other folder as static like "MyStaticFiles",then we should do this
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"MyStaticFiles")),
+                RequestPath = "/MyStaticFiles"
+            });
+            
+
 
             app.UseRouting();
 
