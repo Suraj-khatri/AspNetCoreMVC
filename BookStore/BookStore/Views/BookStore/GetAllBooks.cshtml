@@ -15,7 +15,7 @@
                         <p class="card-text">@book.Description</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <a href="/BookStore/GetBook/@book.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
+                                <a asp-controller="BookStore" asp-action="getbook" asp-route-id="@book.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
                             </div>
                             <small class="text-muted">@book.Author</small>
                         </div>
