@@ -2,27 +2,28 @@
 using BookStore.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BookStore.Controllers
 {
     public class BookStoreController : Controller
     {
-        public readonly BookRepository _repository = new BookRepository();
+        public readonly BookRepository _repository;
 
-        public BookStoreController()
+        public BookStoreController(BookRepository bookRepository)
         {
-            _repository = new BookRepository();
+            _repository = bookRepository;
         }
 
-       public ViewResult GetAllBooks()
+       public async Task<ViewResult> GetAllBooks()
         {
-            var data = _repository.GetAllBooks();
+            var data = await _repository.GetAllBooks();
             return View(data);
         }
 
-        public ViewResult GetBook(int id)
+        public async Task<ViewResult> GetBook(int id)
         {
-            var data = _repository.GetBook(id);
+            var data = await _repository.GetBook(id);
             return View(data);
         }
         public List<BookModel> SearchBooks(string bookName,string authorName)
@@ -30,14 +31,24 @@ namespace BookStore.Controllers
             return _repository.SearchBook(bookName,authorName);
         }
 
-        public ViewResult AddNewBook()
+        public ViewResult AddNewBook(bool IsSucess = false,int bookId =0)
         {
+            ViewBag.IsSucess = IsSucess;
+            ViewBag.BookId = bookId;
             return View();
         }
         [HttpPost]
-        public ViewResult AddNewBook(BookModel bookModel)
+        public async Task<IActionResult> AddNewBook(BookModel bookModel)
         {
-            
+           if(ModelState.IsValid)
+            {
+                var id = await _repository.AddBook(bookModel);
+                if (id > 0)
+                {
+                    return RedirectToAction("AddNewBook", new { IsSucess = true, bookId = id });
+                }
+            }
+            ModelState.AddModelError("","This is a custome model validation ");
             return View();
         }
     }

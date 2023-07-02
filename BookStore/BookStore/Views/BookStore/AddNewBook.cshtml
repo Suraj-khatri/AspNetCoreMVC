@@ -5,20 +5,51 @@
     Layout = "_Layout";
 }
 
+
 <div class="container">
     <h2 class="display-4">AddNewBook</h2> 
+    @if (ViewBag.IsSucess == true)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Congratulation!</strong> You have added a new book.<br />
+            click <a asp-controller="BookStore" asp-action="GetBook" asp-route-id="@ViewBag.BookId">here</a> to view the details.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }   
     <form method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Language" class="control-label"></label>
+            <select asp-for="Language" class="form-control">
+                <option value="">Please select any language.....</option>
+                <option value="Nepali">Nepali</option>
+                <option value="English">English</option>
+                <option value="Chinease">Chinease</option>
+            </select>
+            <span asp-validation-for="Language" class="text-danger"></span>
+        </div>
         <div class="form-group">
             <label asp-for="Title"></label>
             <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger" ></span>
         </div>
         <div class="form-group">
             <label asp-for="Author"></label>
             <input asp-for="Author" class="form-control" />
+            <span asp-validation-for="Author" class="text-danger"></span>
+
         </div>
         <div class="form-group">
             <label asp-for="Description"></label>
             <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+
+        </div>
+        <div class="form-group">
+            <label asp-for="TotalPages"></label>
+            <textarea asp-for="TotalPages" class="form-control"></textarea>
+            <span asp-validation-for="TotalPages" class="text-danger"></span>
+
         </div>
         <div class="form-group">
             <input type="submit" value="Add Book" class="btn btn-primary" />
